@@ -46,6 +46,7 @@ import net.milkbowl.vault.economy.plugins.Economy_Essentials;
 import net.milkbowl.vault.economy.plugins.Economy_McMoney;
 import net.milkbowl.vault.economy.plugins.Economy_MineConomy;
 import net.milkbowl.vault.economy.plugins.Economy_MultiCurrency;
+import net.milkbowl.vault.economy.plugins.Economy_bConomy;
 import net.milkbowl.vault.economy.plugins.Economy_eWallet;
 import net.milkbowl.vault.economy.plugins.Economy_iConomy4;
 import net.milkbowl.vault.economy.plugins.Economy_iConomy5;
@@ -326,6 +327,13 @@ public class Vault extends JavaPlugin {
             Economy econ = new Economy_EconXP(this);
             sm.register(Economy.class, econ, this, ServicePriority.Normal);
             log.info(String.format("[%s][Economy] EconXP found: %s", getDescription().getName(), econ.isEnabled() ? "Loaded" : "Waiting"));
+        }
+        
+        //Try loading bConomy
+        if (packageExists("uk.badger.bConomy.bConomy")) {
+        	Economy econ = new Economy_bConomy(this);
+        	sm.register(Economy.class, econ, this, ServicePriority.Normal);
+        	log.info(String.format("[%s][Economy] bConomy found: %s", getDescription().getName(), econ.isEnabled() ? "Loaded" : "Waiting"));
         }
     }
 

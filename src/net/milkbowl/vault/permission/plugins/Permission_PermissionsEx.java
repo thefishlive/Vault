@@ -31,6 +31,7 @@ import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
+@SuppressWarnings("deprecation")
 public class Permission_PermissionsEx extends Permission {
 
     private final String name = "PermissionsEx";
@@ -71,7 +72,7 @@ public class Permission_PermissionsEx extends Permission {
 
     @Override
     public boolean playerInGroup(String worldName, String playerName, String groupName) {
-    	return PermissionsEx.getPermissionManager().getUser(playerName).inGroup(groupName);
+    	return PermissionsEx.getPermissionManager().getUser(playerName).inGroup(PermissionsEx.getPermissionManager().getGroup(groupName), true);
     }
 
     public class PermissionServerListener implements Listener {
@@ -196,7 +197,7 @@ public class Permission_PermissionsEx extends Permission {
         return PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames();
     }
 
-    @Override
+	@Override
     public String getPrimaryGroup(String world, String playerName) {
         if (PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames().length > 0)
             return PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames()[0];

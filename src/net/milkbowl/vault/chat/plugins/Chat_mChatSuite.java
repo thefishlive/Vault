@@ -15,10 +15,10 @@
 */
 package net.milkbowl.vault.chat.plugins;
 
+import com.miraclem4n.mchat.api.Reader;
+import com.miraclem4n.mchat.api.Writer;
+import com.miraclem4n.mchat.types.InfoType;
 import in.mDev.MiracleM4n.mChatSuite.mChatSuite;
-import in.mDev.MiracleM4n.mChatSuite.api.InfoType;
-import in.mDev.MiracleM4n.mChatSuite.api.MInfoReader;
-import in.mDev.MiracleM4n.mChatSuite.api.MInfoWriter;
 
 import java.util.logging.Logger;
 
@@ -38,55 +38,42 @@ public class Chat_mChatSuite extends Chat {
     private final String name = "mChatSuite";
     private Plugin plugin = null;
     private mChatSuite mChat = null;
-    private MInfoReader mReader = null;
-    private MInfoWriter mWriter = null;
 
-    public Chat_mChatSuite(Plugin plugin, Permission permissions) {
-        super(permissions);
+    public Chat_mChatSuite(Plugin plugin, Permission perms) {
+        super(perms);
         this.plugin = plugin;
 
-        Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(this), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
 
         // Load Plugin in case it was loaded before
         if (mChat == null) {
             Plugin chat = plugin.getServer().getPluginManager().getPlugin("mChatSuite");
-            if (chat != null) {
+            if (chat != null && chat.isEnabled()) {
                 mChat = (mChatSuite) chat;
-                mReader = mChat.getInfoReader();
-                mWriter = mChat.getInfoWriter();
                 log.info(String.format("[%s][Chat] %s hooked.", plugin.getDescription().getName(), "mChatSuite"));
             }
         }
     }
 
     public class PermissionServerListener implements Listener {
-        Chat_mChatSuite chat = null;
-
-        public PermissionServerListener(Chat_mChatSuite chat) {
-            this.chat = chat;
-        }
 
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginEnable(PluginEnableEvent event) {
-            if (this.chat.mChat == null) {
-                Plugin chat = plugin.getServer().getPluginManager().getPlugin("mChat");
+            if (mChat == null) {
+                Plugin chat = plugin.getServer().getPluginManager().getPlugin("mChatSuite");
                 if (chat != null) {
-                    this.chat.mChat = (mChatSuite) chat;
-                    mReader = mChat.getInfoReader();
-                    mWriter = mChat.getInfoWriter();
-                    log.info(String.format("[%s][Chat] %s hooked.", plugin.getDescription().getName(), "mChat"));
+                    mChat = (mChatSuite) chat;
+                    log.info(String.format("[%s][Chat] %s hooked.", plugin.getDescription().getName(), "mChatSuite"));
                 }
             }
         }
-        
+
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginDisable(PluginDisableEvent event) {
-            if (this.chat.mChat != null) {
-                if (event.getPlugin().getDescription().getName().equals("mChat")) {
-                    this.chat.mChat = null;
-                    mReader = null;
-                    mWriter = null;
-                    log.info(String.format("[%s][Chat] %s un-hooked.", plugin.getDescription().getName(), "mChat"));
+            if (mChat != null) {
+                if (event.getPlugin().getDescription().getName().equals("mChatSuite")) {
+                    mChat = null;
+                    log.info(String.format("[%s][Chat] %s un-hooked.", plugin.getDescription().getName(), "mChatSuite"));
                 }
             }
         }
@@ -104,7 +91,7 @@ public class Chat_mChatSuite extends Chat {
 
     @Override
     public String getPlayerPrefix(String world, String player) {
-        return mReader.getPrefix(player, InfoType.USER, world);
+        return Reader.getPrefix(player, InfoType.USER, world);
     }
 
     @Override
@@ -114,7 +101,7 @@ public class Chat_mChatSuite extends Chat {
 
     @Override
     public String getPlayerSuffix(String world, String player) {
-        return mReader.getSuffix(player, InfoType.USER, world);
+        return Reader.getSuffix(player, InfoType.USER, world);
     }
 
     @Override
@@ -124,7 +111,7 @@ public class Chat_mChatSuite extends Chat {
 
     @Override
     public String getGroupPrefix(String world, String group) {
-        return mReader.getPrefix(group, InfoType.GROUP, world);
+        return Reader.getPrefix(group, InfoType.GROUP, world);
     }
 
     @Override
@@ -134,7 +121,7 @@ public class Chat_mChatSuite extends Chat {
 
     @Override
     public String getGroupSuffix(String world, String group) {
-        return mReader.getSuffix(group, InfoType.GROUP, world);
+        return Reader.getSuffix(group, InfoType.GROUP, world);
     }
 
     @Override
@@ -271,27 +258,27 @@ public class Chat_mChatSuite extends Chat {
     public void setGroupInfoString(String world, String group, String node, String value) {
         setGroupInfoValue(world, group, node, value);
     }
-    
+
     private void setPlayerInfoValue(String world, String player, String node, Object value) {
         if (world != null) {
-            mWriter.setWorldVar(player, InfoType.USER, world, node, value.toString());
+            Writer.setWorldVar(player, InfoType.USER, world, node, value.toString());
         } else {
-            mWriter.setInfoVar(player, InfoType.USER, node, value.toString());
+            Writer.setInfoVar(player, InfoType.USER, node, value.toString());
         }
     }
-    
+
     private void setGroupInfoValue(String world, String group, String node, Object value) {
         if (world != null) {
-            mWriter.setWorldVar(group, InfoType.GROUP, world, node, value);
+            Writer.setWorldVar(group, InfoType.GROUP, world, node, value);
         } else {
-            mWriter.setInfoVar(group, InfoType.GROUP, node, value);
+            Writer.setInfoVar(group, InfoType.GROUP, node, value);
         }
     }
     private String getPlayerInfoValue(String world, String player, String node) {
-        return mReader.getInfo(player, InfoType.USER, world, node);
+        return Reader.getInfo(player, InfoType.USER, world, node);
     }
-    
+
     private String getGroupInfoValue(String world, String group, String node) {
-        return mReader.getInfo(group, InfoType.GROUP, world, node);
+        return Reader.getInfo(group, InfoType.GROUP, world, node);
     }
 }

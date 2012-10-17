@@ -18,7 +18,6 @@ package net.milkbowl.vault.permission.plugins;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
@@ -39,17 +38,21 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class Permission_Permissions3 extends Permission {
 
-    private final String name = "Permissions3";
+    private String name = "Permissions3";
     private ModularControl perms;
     private Permissions permission = null;
 
-    public Permission_Permissions3(Vault plugin) {
+    public Permission_Permissions3(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
 
         // Load Plugin in case it was loaded before
         if (permission == null) {
             Plugin perms = plugin.getServer().getPluginManager().getPlugin("Permissions");
+            if (perms == null) {
+                plugin.getServer().getPluginManager().getPlugin("vPerms");
+                name = "vPerms";
+            }
             if (perms != null) {
                 if (perms.isEnabled() && perms.getDescription().getVersion().startsWith("3")) {
                     permission = (Permissions) perms;
@@ -81,7 +84,7 @@ public class Permission_Permissions3 extends Permission {
         public void onPluginEnable(PluginEnableEvent event) {
             if (permission == null) {
                 Plugin permi = event.getPlugin();
-                if(permi.getDescription().getName().equals("Permissions") && permi.getDescription().getVersion().startsWith("3")) {
+                if((permi.getDescription().getName().equals("Permissions") || permi.getDescription().getName().equals("vPerms")) && permi.getDescription().getVersion().startsWith("3")) {
                     if (permi.isEnabled()) {
                         permission = (Permissions) permi;
                         perms = (ModularControl) permission.getHandler();
@@ -94,7 +97,7 @@ public class Permission_Permissions3 extends Permission {
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginDisable(PluginDisableEvent event) {
             if (permission != null) {
-                if (event.getPlugin().getDescription().getName().equals("Permissions")) {
+                if (event.getPlugin().getDescription().getName().equals("Permissions") || event.getPlugin().getDescription().getName().equals("vPerms")) {
                     permission = null;
                     perms = null;
                     log.info(String.format("[%s][Permission] %s un-hooked.", plugin.getDescription().getName(), name));

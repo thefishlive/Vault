@@ -12,7 +12,7 @@
 
     You should have received a copy of the GNU Lesser General Public License
     along with Vault.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package net.milkbowl.vault.chat.plugins;
 
 import java.util.logging.Logger;
@@ -32,115 +32,119 @@ import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class Chat_Permissions3 extends Chat {
-	private static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = Logger.getLogger("Minecraft");
 
-	private final String name = "Permissions 3 (Yeti) - Chat";
-	private PermissionHandler perms;
-	private Plugin plugin = null;
-	private Permissions chat = null;
+    private String name = "Permissions 3 (Yeti) - Chat";
+    private PermissionHandler perms;
+    private Plugin plugin = null;
+    private Permissions chat = null;
 
-	public Chat_Permissions3(Plugin plugin, Permission permissions) {
-		super(permissions);
-		this.plugin = plugin;
+    public Chat_Permissions3(Plugin plugin, Permission perms) {
+        super(perms);
+        this.plugin = plugin;
 
-		Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
 
-		// Load Plugin in case it was loaded before
-		if (chat == null) {
-			Plugin perms = plugin.getServer().getPluginManager().getPlugin("Permissions");
-			if (perms != null) {
-				if (perms.isEnabled() && perms.getDescription().getVersion().startsWith("3")) {
-					chat = (Permissions) perms;
-					this.perms = chat.getHandler();
-					log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), name));
-				}
-			}
-		}
-	}
-	
-	public class PermissionServerListener implements Listener {
-	    
-	    @EventHandler(priority = EventPriority.MONITOR)
-		public void onPluginEnable(PluginEnableEvent event) {
-			if (chat == null) {
-				Plugin permChat = event.getPlugin();
-				if(permChat.getDescription().getName().equals("Permissions") && permChat.getDescription().getVersion().startsWith("3")) {
-					if (permChat.isEnabled()) {
-						chat = (Permissions) permChat;
-						perms = chat.getHandler();
-						log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), name));
-					}
-				}
-			}
-		}
+        // Load Plugin in case it was loaded before
+        if (chat == null) {
+            Plugin p = plugin.getServer().getPluginManager().getPlugin("Permissions");
+            if (p == null) {
+                plugin.getServer().getPluginManager().getPlugin("vPerms");
+                name = "vPerms - Chat";
+            }
+            if (p != null) {
+                if (p.isEnabled() && p.getDescription().getVersion().startsWith("3")) {
+                    chat = (Permissions) p;
+                    this.perms = chat.getHandler();
+                    log.info(String.format("[%s][Chat] %s hooked.", plugin.getDescription().getName(), name));
+                }
+            }
+        }
+    }
 
-	    @EventHandler(priority = EventPriority.MONITOR)
-		public void onPluginDisable(PluginDisableEvent event) {
-			if (chat != null) {
-				if (event.getPlugin().getDescription().getName().equals("Permissions")) {
-					chat = null;
-					perms = null;
-					log.info(String.format("[%s][Permission] %s un-hooked.", plugin.getDescription().getName(), name));
-				}
-			}
-		}
-	}
+    public class PermissionServerListener implements Listener {
 
-	@Override
-	public String getName() {
-		return name;
-	}
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPluginEnable(PluginEnableEvent event) {
+            if (chat == null) {
+                Plugin permChat = event.getPlugin();
+                if((permChat.getDescription().getName().equals("Permissions") || permChat.getDescription().getName().equals("vPerms")) && permChat.getDescription().getVersion().startsWith("3")) {
+                    if (permChat.isEnabled()) {
+                        chat = (Permissions) permChat;
+                        perms = chat.getHandler();
+                        log.info(String.format("[%s][Chat] %s hooked.", plugin.getDescription().getName(), name));
+                    }
+                }
+            }
+        }
 
-	@Override
-	public boolean isEnabled() {
-		if (chat == null) {
-			return false;
-		} else {
-			return chat.isEnabled();
-		}
-	}
-	@Override
-	public int getPlayerInfoInteger(String world, String playerName, String node, int defaultValue) {
-		Integer i = this.perms.getPermissionInteger(world, playerName, node);
-		return (i == null) ? defaultValue : i;
-	}
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPluginDisable(PluginDisableEvent event) {
+            if (chat != null) {
+                if (event.getPlugin().getDescription().getName().equals("Permissions") || event.getPlugin().getDescription().getName().equals("vPerms")) {
+                    chat = null;
+                    perms = null;
+                    log.info(String.format("[%s][Chat] %s un-hooked.", plugin.getDescription().getName(), name));
+                }
+            }
+        }
+    }
 
-	@Override
-	public double getPlayerInfoDouble(String world, String playerName, String node, double defaultValue) {
-		Double d = this.perms.getPermissionDouble(world, playerName, node);
-		return (d == null) ? defaultValue : d;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public boolean getPlayerInfoBoolean(String world, String playerName, String node, boolean defaultValue) {
-		Boolean b = this.perms.getPermissionBoolean(world, playerName, node);
-		return (b == null) ? defaultValue : b;
-	}
+    @Override
+    public boolean isEnabled() {
+        if (chat == null) {
+            return false;
+        } else {
+            return chat.isEnabled();
+        }
+    }
+    @Override
+    public int getPlayerInfoInteger(String world, String playerName, String node, int defaultValue) {
+        Integer i = this.perms.getPermissionInteger(world, playerName, node);
+        return (i == null) ? defaultValue : i;
+    }
 
-	@Override
-	public String getPlayerInfoString(String world, String playerName, String node, String defaultValue) {
-		String s = this.perms.getPermissionString(world, playerName, node);
-		return (s == null) ? defaultValue : s;
-	}
+    @Override
+    public double getPlayerInfoDouble(String world, String playerName, String node, double defaultValue) {
+        Double d = this.perms.getPermissionDouble(world, playerName, node);
+        return (d == null) ? defaultValue : d;
+    }
 
-	@Override
-	public String getPlayerPrefix(String world, String playerName) {
-		return getPlayerInfoString(world, playerName, "prefix", null);
-	}
+    @Override
+    public boolean getPlayerInfoBoolean(String world, String playerName, String node, boolean defaultValue) {
+        Boolean b = this.perms.getPermissionBoolean(world, playerName, node);
+        return (b == null) ? defaultValue : b;
+    }
 
-	@Override
-	public String getPlayerSuffix(String world, String playerName) {
-		return getPlayerInfoString(world, playerName, "suffix", null);
-	}
+    @Override
+    public String getPlayerInfoString(String world, String playerName, String node, String defaultValue) {
+        String s = this.perms.getPermissionString(world, playerName, node);
+        return (s == null) ? defaultValue : s;
+    }
 
-	@Override
-	public void setPlayerSuffix(String world, String player, String suffix) {
-	}
+    @Override
+    public String getPlayerPrefix(String world, String playerName) {
+        return getPlayerInfoString(world, playerName, "prefix", null);
+    }
 
-	@Override
-	public void setPlayerPrefix(String world, String player, String prefix) {
-		//this.perms.addUserInfo(world, player, "prefix", prefix);
-	}
+    @Override
+    public String getPlayerSuffix(String world, String playerName) {
+        return getPlayerInfoString(world, playerName, "suffix", null);
+    }
+
+    @Override
+    public void setPlayerSuffix(String world, String player, String suffix) {
+    }
+
+    @Override
+    public void setPlayerPrefix(String world, String player, String prefix) {
+        //this.perms.addUserInfo(world, player, "prefix", prefix);
+    }
 
     public void setPlayerInfo(String world, String playerName, String node, Object value) {
         //this.perms.addUserInfo(world, playerName, node, value);
@@ -168,12 +172,11 @@ public class Chat_Permissions3 extends Chat {
 
     @Override
     public int getGroupInfoInteger(String world, String groupName, String node, int defaultValue) {
-        //Integer i = this.perms.getInfoInteger(world, groupName, node, true);
-        //return (i == null) ? defaultValue : i;
-    	return defaultValue;
+        int i = this.perms.getGroupPermissionInteger(world, groupName, node);
+        return i != -1 ? i : defaultValue;
     }
 
-    
+
     public void setGroupInfo(String world, String groupName, String node, Object value) {
         this.perms.addGroupInfo(world, groupName, node, value);
     }
@@ -185,9 +188,8 @@ public class Chat_Permissions3 extends Chat {
 
     @Override
     public double getGroupInfoDouble(String world, String groupName, String node, double defaultValue) {
-        //Double d = this.perms.getInfoDouble(world, groupName, node, true);
-        //return (d == null) ? defaultValue : d;
-    	return defaultValue;
+        double d = this.perms.getGroupPermissionDouble(world, groupName, node);
+        return d != -1.0d ? d : defaultValue;
     }
 
     @Override
@@ -197,9 +199,7 @@ public class Chat_Permissions3 extends Chat {
 
     @Override
     public boolean getGroupInfoBoolean(String world, String groupName, String node, boolean defaultValue) {
-        //Boolean b = this.perms.getInfoBoolean(world, groupName, node, true);
-        //return (b == null) ? defaultValue : b;
-    	return defaultValue;
+        return this.perms.getGroupPermissionBoolean(world, groupName, node);
     }
 
     @Override
@@ -209,42 +209,32 @@ public class Chat_Permissions3 extends Chat {
 
     @Override
     public String getGroupInfoString(String world, String groupName, String node, String defaultValue) {
-        //String s = this.perms.getInfoString(world, groupName, node, true);
-        //return (s == null) ? defaultValue : s;
-    	return null;
+        String s = this.perms.getGroupPermissionString(world, groupName, node);
+        return s != null ? s : defaultValue;
     }
 
     @Override
     public void setGroupInfoString(String world, String groupName, String node, String value) {
         setGroupInfo(world, groupName, node, value);
     }
-    
-	@Override
-	public String getGroupPrefix(String world, String group) {
-		//try {
-		//	return perms.safeGetGroup(world, group).getPrefix();
-		//} catch(Exception e) {
-			return null;
-		//}
-	}
 
-	@Override
-	public void setGroupPrefix(String world, String group, String prefix) {
-		this.perms.addGroupInfo(world, group, "prefix", prefix);
-	}
+    @Override
+    public String getGroupPrefix(String world, String group) {
+        return this.perms.getGroupPrefix(world, group);
+    }
 
-	@Override
-	public String getGroupSuffix(String world, String group) {
-		/*
-		try {
-			return perms.safeGetGroup(world, group).getSuffix();
-		} catch(Exception e) { */
-			return null;
-		//} 
-	}
+    @Override
+    public void setGroupPrefix(String world, String group, String prefix) {
+        this.perms.addGroupInfo(world, group, "prefix", prefix);
+    }
 
-	@Override
-	public void setGroupSuffix(String world, String group, String suffix) {
-		this.perms.addGroupInfo(world, group, "suffix", suffix);
-	}
+    @Override
+    public String getGroupSuffix(String world, String group) {
+        return this.perms.getGroupSuffix(world, group);
+    }
+
+    @Override
+    public void setGroupSuffix(String world, String group, String suffix) {
+        this.perms.addGroupInfo(world, group, "suffix", suffix);
+    }
 }

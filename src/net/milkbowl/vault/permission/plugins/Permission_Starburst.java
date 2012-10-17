@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
@@ -42,31 +41,7 @@ public class Permission_Starburst extends Permission {
     private StarburstPlugin perms;
     private final String name = "Starburst";
 
-    public class PermissionServerListener implements Listener {
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPluginEnable(PluginEnableEvent event) {
-            if (perms == null) {
-                Plugin p = event.getPlugin();
-                if (p.getDescription().getName().equals("bPermissions") && p.isEnabled()) {
-                    perms = (StarburstPlugin) p;
-                    log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), name));
-                }
-            }
-        }
-
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPluginDisable(PluginDisableEvent event) {
-            if (perms != null) {
-                if (event.getPlugin().getDescription().getName().equals("bPermissions")) {
-                    perms = null;
-                    log.info(String.format("[%s][Permission] %s un-hooked.", plugin.getDescription().getName(), name));
-                }
-            }
-        }
-    }
-
-    public Permission_Starburst(Vault plugin) {
+    public Permission_Starburst(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
 
@@ -76,6 +51,30 @@ public class Permission_Starburst extends Permission {
             if (p != null) {
                 perms = (StarburstPlugin) p;
                 log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), name));
+            }
+        }
+    }
+
+    public class PermissionServerListener implements Listener {
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPluginEnable(PluginEnableEvent event) {
+            if (perms == null) {
+                Plugin p = event.getPlugin();
+                if (p.getDescription().getName().equals("Starburst") && p.isEnabled()) {
+                    perms = (StarburstPlugin) p;
+                    log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), name));
+                }
+            }
+        }
+
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPluginDisable(PluginDisableEvent event) {
+            if (perms != null) {
+                if (event.getPlugin().getDescription().getName().equals("Starburst")) {
+                    perms = null;
+                    log.info(String.format("[%s][Permission] %s un-hooked.", plugin.getDescription().getName(), name));
+                }
             }
         }
     }

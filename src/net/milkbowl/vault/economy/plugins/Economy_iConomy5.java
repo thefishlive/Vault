@@ -30,7 +30,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.iConomy.iConomy;
 import com.iConomy.system.Holdings;
@@ -40,10 +39,10 @@ public class Economy_iConomy5 implements Economy {
     private static final Logger log = Logger.getLogger("Minecraft");
 
     private final String name = "iConomy 5";
-    private JavaPlugin plugin = null;
+    private Plugin plugin = null;
     protected iConomy economy = null;
 
-    public Economy_iConomy5(JavaPlugin plugin) {
+    public Economy_iConomy5(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
         // Load Plugin in case it was loaded before
@@ -81,6 +80,10 @@ public class Economy_iConomy5 implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw negative funds");
+        }
+
         Holdings holdings = iConomy.getAccount(playerName).getHoldings();
         if (holdings.hasEnough(amount)) {
             holdings.subtract(amount);
@@ -92,6 +95,10 @@ public class Economy_iConomy5 implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
+        }
+        
         Holdings holdings = iConomy.getAccount(playerName).getHoldings();
         holdings.add(amount);
         return new EconomyResponse(amount, holdings.balance(), EconomyResponse.ResponseType.SUCCESS, null);
@@ -218,4 +225,9 @@ public class Economy_iConomy5 implements Economy {
         iConomy.getAccount(playerName);
         return true;
     }
+
+	@Override
+	public int fractionalDigits() {
+		return 2;
+	}
 }

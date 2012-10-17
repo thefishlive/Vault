@@ -15,7 +15,6 @@
  */
 package net.milkbowl.vault.permission.plugins;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
@@ -37,7 +36,7 @@ public class Permission_PermissionsEx extends Permission {
     private final String name = "PermissionsEx";
     private PermissionsEx permission = null;
 
-    public Permission_PermissionsEx(Vault plugin) {
+    public Permission_PermissionsEx(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(this), plugin);
 
@@ -49,7 +48,6 @@ public class Permission_PermissionsEx extends Permission {
                     try {
                         if (Double.valueOf(perms.getDescription().getVersion()) < 1.16) {
                             log.info(String.format("[%s][Permission] %s below 1.16 is not compatible with Vault! Falling back to SuperPerms only mode. PLEASE UPDATE!", plugin.getDescription().getName(), name));
-                            return;
                         }
                     } catch (NumberFormatException e) {
                         // Do nothing
@@ -199,10 +197,14 @@ public class Permission_PermissionsEx extends Permission {
 
 	@Override
     public String getPrimaryGroup(String world, String playerName) {
-        if (PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames().length > 0)
-            return PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames()[0];
-        else
+        PermissionUser user = PermissionsEx.getPermissionManager().getUser(playerName);
+        if (user == null) {
             return null;
+        } else if (user.getGroupsNames(world).length > 0) {
+            return user.getGroupsNames(world)[0];
+        } else {
+            return null;
+        }
     }
 
     @Override

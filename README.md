@@ -82,25 +82,33 @@ Github and we'll get to it at our convenience.
    - eWallet (http://dev.bukkit.org/server-mods/ewallet/)
    - MuliCurrency
    - Essentials Economy (http://forums.bukkit.org/threads/15312/)
+   - McMoney
+   - AEco
+   - MultiCurrency
 
  * Permissions
    - Permissions Ex (http://forums.bukkit.org/threads/18140/)
    - Permissions 3 (http://forums.bukkit.org/threads/18430/)
    - bPermissions
    - bPermissions 2 (http://dev.bukkit.org/server-mods/bpermissions/)
+   - Privileges
    - PermissionsBukkit
    - zPermissions
    - SuperPerms
+   - SimplyPerms
    - Group Manager (Essentials) (http://forums.bukkit.org/threads/15312/)
 
+  * Chat
+    - iChat
+    - bPermissions
+    - PEX
+    - Permissions3
+    - mChat
+    - mChatSuite
+    - Group Manager (Essentials)
 
 ## Implementing Vault
-Implementing Vault is quite simple through obtaining an instance through the
-Bukkit PluginManager class by using the string "Vault".  An example plugin with
-limited functionality is located within the VaultExamplePlugin repository
-(https://github.com/MilkBowl/VaultExamplePlugin).
-
-Example:
+Implementing Vault is quite simple. It requires getting the Economy, Permission, or Chat service from the Bukkit ServiceManager. See the example below:
 
 ```java
 package com.example.plugin;
@@ -155,7 +163,7 @@ public class ExamplePlugin extends JavaPlugin {
     }
     
     private boolean setupChat() {
-        RegistereredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
         chat = rsp.getProvider();
         return chat != null;
     }
@@ -175,8 +183,8 @@ public class ExamplePlugin extends JavaPlugin {
         Player player = (Player) sender;
         
         if(command.getLabel().equals("test-economy")) {
-            // Lets give the player 1.05 currency (note that SOME economic plugins require rounding!
-            sender.sendMessage(String.format("You have %s", vault.getEconomy().format(vault.getEconomy().getBalance(player.getName()).amount)));
+            // Lets give the player 1.05 currency (note that SOME economic plugins require rounding!)
+            sender.sendMessage(String.format("You have %s", econ.format(econ.getBalance(player.getName()))));
             EconomyResponse r = econ.depositPlayer(player.getName(), 1.05);
             if(r.transactionSuccess()) {
                 sender.sendMessage(String.format("You were given %s and now have %s", econ.format(r.amount), econ.format(r.balance)));
@@ -186,7 +194,7 @@ public class ExamplePlugin extends JavaPlugin {
             return true;
         } else if(command.getLabel().equals("test-permission")) {
             // Lets test if user has the node "example.plugin.awesome" to determine if they are awesome or just suck
-            if(perms.hasPermission(player, "example.plugin.awesome")) {
+            if(perms.has(player, "example.plugin.awesome")) {
                 sender.sendMessage("You are awesome!");
             } else {
                 sender.sendMessage("You suck!");

@@ -29,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.iCo6.Constants;
 import com.iCo6.iConomy;
@@ -40,13 +39,16 @@ public class Economy_iConomy6 implements Economy {
     private static final Logger log = Logger.getLogger("Minecraft");
 
     private final String name = "iConomy 6";
-    private JavaPlugin plugin = null;
+    private Plugin plugin = null;
     protected iConomy economy = null;
     private Accounts accounts;
 
-    public Economy_iConomy6(JavaPlugin plugin) {
+    public Economy_iConomy6(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
+        log.warning("iConomy6 - If you are using Flatfile storage be aware that iCo6 has a CRITICAL bug which can wipe ALL iconomy data.");
+        log.warning("if you're using Votifier, or any other plugin which handles economy data in a threaded manner your server is at risk!");
+        log.warning("it is highly suggested to use SQL with iCo6 or to use an alternative economy plugin!");
         // Load Plugin in case it was loaded before
         if (economy == null) {
             Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
@@ -129,6 +131,10 @@ public class Economy_iConomy6 implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw negative funds");
+        }
+
         Holdings holdings = accounts.get(playerName).getHoldings();
         if (holdings.hasEnough(amount)) {
             holdings.subtract(amount);
@@ -140,6 +146,10 @@ public class Economy_iConomy6 implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
+        }
+
         Holdings holdings = accounts.get(playerName).getHoldings();
         holdings.add(amount);
         return new EconomyResponse(amount, holdings.getBalance(), ResponseType.SUCCESS, null);
@@ -184,11 +194,19 @@ public class Economy_iConomy6 implements Economy {
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw negative funds");
+        }
+
         return withdrawPlayer(name, amount);
     }
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
+        }
+
         return depositPlayer(name, amount);
     }
 
@@ -233,4 +251,9 @@ public class Economy_iConomy6 implements Economy {
         }
         return accounts.create(playerName);
     }
+
+	@Override
+	public int fractionalDigits() {
+		return -1;
+	}
 }

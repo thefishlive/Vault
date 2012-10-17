@@ -43,6 +43,14 @@ public interface Economy {
     public boolean hasBankSupport();
 
     /**
+     * Some economy plugins round off after a certain number of digits.
+     * This function returns the number of digits the plugin keeps
+     * or -1 if no rounding occurs.
+     * @return number of digits after the decimal point kept
+     */
+    public int fractionalDigits();
+
+    /**
      * Format amount into a human readable String This provides translation into
      * economy specific formatting to improve consistency between plugins.  
      *
@@ -86,14 +94,17 @@ public interface Economy {
     public double getBalance(String playerName);
 
     /**
-     * Checks if the player account has the amount
+     * Checks if the player account has the amount - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param playerName
      * @param amount
      * @return
      */
     public boolean has(String playerName, double amount);
+    
     /**
-     * Withdraw an amount from a player
+     * Withdraw an amount from a player - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param playerName Name of player
      * @param amount Amount to withdraw
      * @return Detailed response of transaction
@@ -101,7 +112,8 @@ public interface Economy {
     public EconomyResponse withdrawPlayer(String playerName, double amount);
 
     /**
-     * Deposit an amount to a player
+     * Deposit an amount to a player - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param playerName Name of player
      * @param amount Amount to deposit
      * @return Detailed response of transaction
@@ -131,7 +143,8 @@ public interface Economy {
     public EconomyResponse bankBalance(String name);
 
     /**
-     * Returns true or false whether the bank has the amount specified
+     * Returns true or false whether the bank has the amount specified - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param name
      * @param amount
      * @return
@@ -139,7 +152,8 @@ public interface Economy {
     public EconomyResponse bankHas(String name, double amount);
 
     /**
-     * Withdraw an amount from a bank account
+     * Withdraw an amount from a bank account - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param name
      * @param amount
      * @return
@@ -147,7 +161,8 @@ public interface Economy {
     public EconomyResponse bankWithdraw(String name, double amount);
 
     /**
-     * Deposit an amount into a bank account
+     * Deposit an amount into a bank account - DO NOT USE NEGATIVE AMOUNTS
+     * 
      * @param name
      * @param amount
      * @return

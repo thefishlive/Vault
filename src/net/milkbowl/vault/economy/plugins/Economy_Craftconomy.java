@@ -37,16 +37,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Economy_Craftconomy implements Economy {
     private static final Logger log = Logger.getLogger("Minecraft");
 
     private final String name = "Craftconomy";
-    private JavaPlugin plugin = null;
+    private Plugin plugin = null;
     protected Craftconomy economy = null;
 
-    public Economy_Craftconomy(JavaPlugin plugin) {
+    public Economy_Craftconomy(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
 
@@ -113,7 +112,7 @@ public class Economy_Craftconomy implements Economy {
     public String currencyNameSingular() {
         return CurrencyHandler.getCurrency(Config.currencyDefault, true).getName();
     }
-    
+
     @Override
     public String currencyNamePlural() {
         return CurrencyHandler.getCurrency(Config.currencyDefault, true).getNamePlural();
@@ -130,6 +129,10 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, getBalance(playerName), ResponseType.FAILURE, "Cannot withdraw negative funds");
+        }
+
         double balance;
         Account account = AccountHandler.getAccount(playerName);
         if (account.hasEnough(amount)) {
@@ -142,6 +145,10 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String playerName, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, getBalance(playerName), ResponseType.FAILURE, "Cannot desposit negative funds");
+        }
+
         Account account = AccountHandler.getAccount(playerName);
         account.addMoney(amount);
         return new EconomyResponse(amount, account.getDefaultBalance(), ResponseType.SUCCESS, null);
@@ -169,7 +176,7 @@ public class Economy_Craftconomy implements Economy {
             return new EconomyResponse(0, 0, ResponseType.SUCCESS, "");
         }
 
-        return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to create that bank account.");
+        return new EconomyResponse(0, 0, ResponseType.FAILURE, "Unable to delete that bank account.");
     }
 
     @Override
@@ -188,6 +195,10 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot withdraw negative funds");
+        }
+
         EconomyResponse er = bankHas(name, amount);
         if (!er.transactionSuccess())
             return er;
@@ -206,6 +217,10 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
+        if (amount < 0) {
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
+        }
+
         if (BankHandler.exists(name))
         {
             Bank bank = BankHandler.getBank(name);
@@ -283,4 +298,9 @@ public class Economy_Craftconomy implements Economy {
         AccountHandler.getAccount(playerName);
         return true;
     }
+
+	@Override
+	public int fractionalDigits() {
+		return -1;
+	}
 }

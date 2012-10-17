@@ -18,10 +18,11 @@ package net.milkbowl.vault.permission.plugins;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -40,7 +41,7 @@ public class Permission_bPermissions2 extends Permission {
     private final String name = "bPermissions2";
     private boolean hooked = false;
 
-    public Permission_bPermissions2(Vault plugin) {
+    public Permission_bPermissions2(Plugin plugin) {
         this.plugin = plugin;
         
         Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(), plugin);
@@ -88,8 +89,32 @@ public class Permission_bPermissions2 extends Permission {
     public boolean isEnabled() {
         return hooked;
     }
+    
+    @Override
+    public boolean has(Player player, String permission) {
+        return playerHas(player.getWorld().getName(), player.getName(), permission);
+    }
 
     @Override
+	public boolean has(String world, String player, String permission) {
+		return playerHas(world, player, permission);
+	}
+
+	@Override
+	public boolean has(CommandSender sender, String permission) {
+		if(sender instanceof Player) {
+			Player player = (Player) sender;
+			return has(player, permission);
+		}
+		return sender.hasPermission(permission);
+	}
+
+	@Override
+	public boolean has(org.bukkit.World world, String player, String permission) {
+		return playerHas(world.getName(), player, permission);
+	}
+
+	@Override
     public boolean playerHas(String world, String player, String permission) {
         return ApiLayer.hasPermission(world, CalculableType.USER, player, permission);
     }

@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.permission.Permission;
 
 import org.anjocaido.groupmanager.GroupManager;
@@ -44,7 +43,7 @@ public class Permission_GroupManager extends Permission {
     private final String name = "GroupManager";
     private GroupManager groupManager;
 
-    public Permission_GroupManager(Vault plugin) {
+    public Permission_GroupManager(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new PermissionServerListener(this), plugin);
 
@@ -135,6 +134,10 @@ public class Permission_GroupManager extends Permission {
         }
 
         user.addPermission(permission);
+        Player p = Bukkit.getPlayer(playerName);
+        if (p != null) {
+            GroupManager.BukkitPermissions.updatePermissions(p);
+        }
         return true;
     }
 
@@ -156,6 +159,10 @@ public class Permission_GroupManager extends Permission {
         }
 
         user.removePermission(permission);
+        Player p = Bukkit.getPlayer(playerName);
+        if (p != null) {
+            GroupManager.BukkitPermissions.updatePermissions(p);
+        }
         return true;
     }
 
@@ -261,6 +268,10 @@ public class Permission_GroupManager extends Permission {
         } else {
             user.addSubGroup(group);
         }
+        Player p = Bukkit.getPlayer(playerName);
+        if (p != null) {
+            GroupManager.BukkitPermissions.updatePermissions(p);
+        }
         return true;
     }
 
@@ -279,16 +290,23 @@ public class Permission_GroupManager extends Permission {
         if (user == null) {
             return false;
         }
+        boolean success = false;
         if (user.getGroup().getName().equalsIgnoreCase(groupName)) {
             user.setGroup(owh.getDefaultGroup());
-            return true;
+            success = true;
         } else {
             Group group = owh.getGroup(groupName);
-            if (group == null) {
-                return false;
+            if (group != null) {
+                success = user.removeSubGroup(group);
             }
-            return user.removeSubGroup(group);
         }
+        if (success) {
+            Player p = Bukkit.getPlayer(playerName);
+            if (p != null) {
+                GroupManager.BukkitPermissions.updatePermissions(p);
+            }
+        }
+        return success;
     }
 
     @Override
@@ -298,6 +316,9 @@ public class Permission_GroupManager extends Permission {
             handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         } else {
             handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
+        }
+        if (handler == null) {
+            return null;
         }
         return handler.getGroups(playerName);
     }
@@ -309,6 +330,9 @@ public class Permission_GroupManager extends Permission {
             handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         } else {
             handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
+        }
+        if (handler == null) {
+            return null;
         }
         return handler.getGroup(playerName);
     }
@@ -357,7 +381,14 @@ public class Permission_GroupManager extends Permission {
     public String[] getGroups() {
         Set<String> groupNames = new HashSet<String>();
         for (World world : Bukkit.getServer().getWorlds()) {
-            Collection<Group> groups = groupManager.getWorldsHolder().getWorldData(world.getName()).getGroupList();
+            OverloadedWorldHolder owh = groupManager.getWorldsHolder().getWorldData(world.getName());
+            if (owh == null) {
+                continue;
+            }
+            Collection<Group> groups = owh.getGroupList();
+            if (groups == null) {
+                continue;
+            }
             for (Group group : groups) {
                 groupNames.add(group.getName());
             }

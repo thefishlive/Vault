@@ -123,7 +123,9 @@ public class Vault extends JavaPlugin {
 
         // Schedule to check the version every 30 minutes for an update. This is to update the most recent 
         // version so if an admin reconnects they will be warned about newer versions.
-        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+        
+        // remove the update check because it will not be up to date with main vault
+        /*this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 
             @Override
             public void run() {
@@ -138,7 +140,7 @@ public class Vault extends JavaPlugin {
                 }
             }
 
-        }, 0, 432000);
+        }, 0, 432000);*/
 
         // Load up the Plugin metrics
         try {

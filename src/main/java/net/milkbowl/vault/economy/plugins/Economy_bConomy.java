@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import uk.badger.bConomy.Global;
 import uk.badger.bConomy.bConomy;
@@ -24,15 +23,16 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 public class Economy_bConomy implements Economy{
 
-	private static final Logger log = Logger.getLogger("Minecraft");
+	private static final Logger log = Logger.getLogger("Vault");
 
-    private final String name = "bConomy 1";
-    private JavaPlugin plugin = null;
+    private final String name = "bConomy";
+    private Plugin plugin = null;
     protected bConomy economy = null;
 
-	public Economy_bConomy(JavaPlugin plugin) {
+	public Economy_bConomy(Plugin plugin) {
         this.plugin = plugin;
         Bukkit.getServer().getPluginManager().registerEvents(new EconomyServerListener(this), plugin);
+   
         // Load Plugin in case it was loaded before
         if (economy == null) {
             Plugin ec = plugin.getServer().getPluginManager().getPlugin("iConomy");
@@ -52,9 +52,10 @@ public class Economy_bConomy implements Economy{
 
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginEnable(PluginEnableEvent event) {
-        	if (economy == null) {
+        	if (economy.economy == null) {
                 Plugin ec = plugin.getServer().getPluginManager().getPlugin("bConomy");
-                if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("uk.badger.bConomy.bConomy")) {
+                
+                if (ec != null && ec.isEnabled()) {
                     economy.economy = (bConomy) ec;
                     log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
                 }
@@ -63,13 +64,12 @@ public class Economy_bConomy implements Economy{
 
         @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginDisable(PluginDisableEvent event) {
-        	if (economy == null) {
-                Plugin ec = plugin.getServer().getPluginManager().getPlugin("bConomy");
-                if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("uk.badger.bConomy.bConomy")) {
-                	economy.economy = (bConomy) ec;
-                    log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
-                }
-            }
+        	 if (economy.economy != null) {
+                 if (event.getPlugin().getDescription().getName().equals("bConomy")) {
+                     economy.economy = null;
+                     log.info(String.format("[%s][Economy] %s unhooked.", plugin.getDescription().getName(), economy.name));
+                 }
+             }
         }
 	}
 	

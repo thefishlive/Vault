@@ -72,6 +72,7 @@ import net.milkbowl.vault.permission.plugins.Permission_bPermissions2;
 import net.milkbowl.vault.permission.plugins.Permission_zPermissions;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -465,9 +466,9 @@ public class Vault extends JavaPlugin {
         }
         // Send user some info!
         sender.sendMessage(String.format("[%s] Vault v%s Information", getDescription().getName(), getDescription().getVersion()));
-        sender.sendMessage(String.format("[%s] Economy: %s [%s]", getDescription().getName(), econ == null ? "None" : econ.getName(), registeredEcons));
-        sender.sendMessage(String.format("[%s] Permission: %s [%s]", getDescription().getName(), perm == null ? "None" : perm.getName(), registeredPerms));
-        sender.sendMessage(String.format("[%s] Chat: %s [%s]", getDescription().getName(), chat == null ? "None" : chat.getName(), registeredChats));
+        sender.sendMessage(String.format("[%s] Economy: " + (econ != null && econ.isEnabled() ? ChatColor.WHITE : ChatColor.RED) + "%s " + ChatColor.WHITE + "[%s]", getDescription().getName(), econ == null ? "None" : econ.getName(), registeredEcons));
+        sender.sendMessage(String.format("[%s] Permission: " + (perm != null && perm.isEnabled() ? ChatColor.WHITE : ChatColor.RED) + "%s " + ChatColor.WHITE + "[%s]", getDescription().getName(), perm == null ? "None" : perm.getName(), registeredPerms));
+        sender.sendMessage(String.format("[%s] Chat: " + (chat != null && chat.isEnabled() ? ChatColor.WHITE : ChatColor.RED) + "%s " + ChatColor.WHITE + "[%s]", getDescription().getName(), chat == null ? "None" : chat.getName(), registeredChats));
     }
 
     /**

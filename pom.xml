@@ -10,8 +10,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.3.2-R2.0</version>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.6-R0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.badger</groupId>

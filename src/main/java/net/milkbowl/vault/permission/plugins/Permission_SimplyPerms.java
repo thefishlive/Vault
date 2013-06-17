@@ -63,10 +63,8 @@ public class Permission_SimplyPerms extends Permission{
                 Plugin perms = plugin.getServer().getPluginManager().getPlugin("SimplyPerms");
 
                 if (perms != null) {
-                    if (perms.isEnabled()) {
-                        permission.perms = ((SimplyPlugin) perms).getAPI();
-                        log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), permission.name));
-                    }
+                    permission.perms = ((SimplyPlugin) perms).getAPI();
+                    log.info(String.format("[%s][Permission] %s hooked.", plugin.getDescription().getName(), permission.name));
                 }
             }
         }
@@ -219,6 +217,11 @@ public class Permission_SimplyPerms extends Permission{
     @Override
     public String[] getGroups() {
         return perms.getAllGroups().toArray(new String[0]);
+    }
+
+    @Override
+    public boolean hasGroupSupport() {
+        return true;
     }
 
 }

@@ -82,6 +82,7 @@ Github and we'll get to it at our convenience.
    - eWallet (http://dev.bukkit.org/server-mods/ewallet/)
    - MuliCurrency
    - Essentials Economy (http://forums.bukkit.org/threads/15312/)
+   - CommandsEX Economy (http://dev.bukkit.org/server-mods/commandsex/)
    - McMoney
    - AEco
    - MultiCurrency
@@ -115,7 +116,6 @@ package com.example.plugin;
 
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -124,7 +124,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ExamplePlugin extends JavaPlugin {
@@ -136,17 +136,17 @@ public class ExamplePlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        log.info(Level.INFO, String.format("[%s] Disabled Version %s", getDescription().getName(), getDescription().getVersion()));
+        log.info(String.format("[%s] Disabled Version %s", getDescription().getName(), getDescription().getVersion()));
     }
 
     @Override
     public void onEnable() {
         if (!setupEconomy() ) {
-            log.info(Level.SEVERE, String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        setupPermission();
+        setupPermissions();
         setupChat();
     }
     

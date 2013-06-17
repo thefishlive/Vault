@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.milkbowl.vault</groupId>
 	<artifactId>Vault</artifactId>
-	<version>1.2.20-SNAPSHOT</version>
+	<version>1.2.26-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -11,7 +11,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.4.6-R0.1</version>
+			<version>1.5.2-R1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.badger</groupId>
@@ -28,16 +28,14 @@
 			<systemPath>${project.basedir}/lib/DroxPerms-0.4.0-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>net.krinsoft.privileges</groupId>
+			<groupId>net.krinsoft</groupId>
 			<artifactId>Privileges</artifactId>
-			<version>1.4.0b45</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/Privileges.jar</systemPath>
+			<version>1.7.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tyrannyofheaven.bukkit</groupId>
 			<artifactId>zPermissions</artifactId>
-			<version>0.9.9</version>
+			<version>0.9.19-SNAPSHOT</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/zPermissions.jar</systemPath>
 		</dependency>
@@ -83,6 +81,13 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/bpermissions.jar</systemPath>
 		</dependency>
+		<dependency>
+            <groupId>com.github.sebc722</groupId>
+            <artifactId>xPerms</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Xperms.jar</systemPath>
+        </dependency>
 		<dependency>
 			<groupId>ca.agnate.EconXP.EconXP</groupId>
 			<artifactId>EconXP</artifactId>
@@ -154,6 +159,13 @@
 			<systemPath>${project.basedir}/lib/iConomy6.jar</systemPath>
 		</dependency>
 		<dependency>
+			<groupId>com.gmail.mirelatrue.xpbank.XPBank</groupId>
+			<artifactId>XPBank</artifactId>
+			<version>0.9</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/XPBank.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>net.D3GN.MiracleM4n.mChat.mChat</groupId>
 			<artifactId>mChat</artifactId>
 			<version>1.8.5</version>
@@ -205,9 +217,9 @@
 		<dependency>
 			<groupId>de.bananaco.permissions.Permissions</groupId>
 			<artifactId>bPermissions2</artifactId>
-			<version>2.9.12d</version>
+			<version>2.10.5</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/bpermissions2.jar</systemPath>
+			<systemPath>${project.basedir}/lib/bpermissions25.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.dthielke.starburst</groupId>
@@ -231,11 +243,9 @@
 			<systemPath>${project.basedir}/lib/Craftconomy.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>me.greatmancode</groupId>
+			<groupId>com.greatmancode</groupId>
 			<artifactId>craftconomy3</artifactId>
-			<version>3.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/craftconomy3.jar</systemPath>
+			<version>3.1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.crystalyx.bukkit.simplyperms</groupId>
@@ -252,21 +262,28 @@
 			<systemPath>${project.basedir}/lib/Gringotts.jar</systemPath>
 		</dependency>
 		<dependency>
-		    <groupId>com.gravypod.Dosh</groupId>
-		    <artifactId>Dosh</artifactId>
-		    <version>1.0</version>
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/lib/Dosh.jar</systemPath>
+			<groupId>com.gravypod.Dosh</groupId>
+			<artifactId>Dosh</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/Dosh.jar</systemPath>
 		</dependency>
 		<dependency>
-		    <groupId>com.github.zathrus_writer.commandsex</groupId>
-		    <artifactId>CommandsEX</artifactId>
-		    <version>1.98</version>
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/lib/CommandsEX.jar</systemPath>
+			<groupId>com.github.zathrus_writer.commandsex</groupId>
+			<artifactId>CommandsEX</artifactId>
+			<version>1.98</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/CommandsEX.jar</systemPath>
+		</dependency>
+		<dependency>
+		    <groupId>com.github.omwah</groupId>
+		    <artifactId>SDFEconomy</artifactId>
+		    <version>0.1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
+		<defaultGoal>clean install</defaultGoal>
+		<sourceDirectory>src/</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>${project.basedir}</directory>
@@ -345,7 +362,7 @@
 
 Vault currently Supports:
 Permissions 3, PEX, GroupManager, bPerms, bPerms2, SimplyPerms, DroxPerms, zPermissions, Starburst
-iConomy 4,5,6 BOSEconomy 6/7, EssentialsEcon, 3Co, MultiConomy, MineConomy, EconXP, eWallet, CurrencyCore, CraftConomy, AEco
+iConomy 4,5,6 BOSEconomy 6/7, EssentialsEcon, 3Co, MultiConomy, MineConomy, EconXP, eWallet, CurrencyCore, XPBank, CraftConomy, AEco, SDFEconomy
 </description>
 	<scm>
 		<url>https://github.com/MilkBowl/Vault</url>
@@ -364,6 +381,18 @@ iConomy 4,5,6 BOSEconomy 6/7, EssentialsEcon, 3Co, MultiConomy, MineConomy, Econ
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+        <repository>
+			<id>sdfeconomy-repo</id>
+			<url>http://omwah.sdf.org/maven/repo/snapshots/</url>
+		</repository>
+		<repository>
+			<id>greatman-repo</id>
+			<url>http://repo.greatmancode.com/content/groups/public/</url>
+		</repository>
+		<repository>
+		    <id>krinsoft</id>
+		    <url>http://files.krinsoft.net:8085/nexus/content/groups/public</url>
 		</repository>
 	</repositories>
 </project>

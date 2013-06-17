@@ -23,7 +23,6 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -113,7 +112,7 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean has(CommandSender sender, String permission) {
-        if (sender.isOp() || sender instanceof ConsoleCommandSender) {
+        if (sender.isOp() || !(sender instanceof Player)) {
             return true;
         } else {
             return has(((Player) sender).getWorld().getName(), sender.getName(), permission);
@@ -126,8 +125,9 @@ public class Permission_Permissions3 extends Permission {
     }
 
     public boolean playerAddGroup(String worldName, String playerName, String groupName) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
 
         Group g = perms.getGroupObject(worldName, groupName);
         if (g == null) {
@@ -144,8 +144,9 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean playerRemoveGroup(String worldName, String playerName, String groupName) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
 
         Group g = perms.getGroupObject(worldName, groupName);
         if (g == null) {
@@ -174,8 +175,9 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean groupAdd(String worldName, String groupName, String permission) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
 
         perms.addGroupPermission(worldName, groupName, permission);
         return true;
@@ -183,16 +185,18 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean groupRemove(String worldName, String groupName, String permission) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
         perms.removeGroupPermission(worldName, groupName, permission);
         return true;
     }
 
     @Override
     public boolean groupHas(String worldName, String groupName, String permission) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
         try {
             return perms.safeGetGroup(worldName, groupName).hasPermission(permission);
         } catch (Exception e) {
@@ -238,8 +242,9 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean playerAddTransient(String worldName, String player, String permission) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
         try {
             perms.safeGetUser(worldName, player).addTransientPermission(permission);
             return true;
@@ -265,8 +270,9 @@ public class Permission_Permissions3 extends Permission {
 
     @Override
     public boolean playerRemoveTransient(String worldName, String player, String permission) {
-        if (worldName == null)
+        if (worldName == null) {
             worldName = "*";
+        }
 
         try {
             perms.safeGetUser(worldName, player).removeTransientPermission(permission);
@@ -291,5 +297,10 @@ public class Permission_Permissions3 extends Permission {
     @Override
     public boolean hasSuperPermsCompat() {
         return false;
+    }
+
+    @Override
+    public boolean hasGroupSupport() {
+        return true;
     }
 }

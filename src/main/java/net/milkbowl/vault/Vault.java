@@ -191,6 +191,12 @@ public class Vault extends JavaPlugin {
 
         // Try to load iChat
         hookChat("iChat", Chat_iChat.class, ServicePriority.Low, "net.TheDgtl.iChat.iChat");
+
+        // Try to load zPermissions
+        hookChat("zPermissions", Chat_zPermissions.class, ServicePriority.Normal, "org.tyrannyofheaven.bukkit.zPermissions.model.EntityMetadata");
+
+        // Try to load Privileges
+        hookChat("Privileges", Chat_Privileges.class, ServicePriority.Normal, "net.krinsoft.privileges.Privileges");
     }
 
     /**
@@ -262,6 +268,12 @@ public class Vault extends JavaPlugin {
         
         // Try to load CommandsEX Economy
         hookEconomy("CommandsEX", Economy_CommandsEX.class, ServicePriority.Normal, "com.github.zathrus_writer.commandsex.api.EconomyAPI");
+         
+        // Try to load SDFEconomy Economy
+        hookEconomy("SDFEconomy", Economy_SDFEconomy.class, ServicePriority.Normal, "com.github.omwah.SDFEconomy.SDFEconomy");
+        
+        // Try to load XPBank
+        hookEconomy("XPBank", Economy_XPBank.class, ServicePriority.Normal, "com.gmail.mirelatrue.xpbank.XPBank");
     }
 
     /**
@@ -300,6 +312,9 @@ public class Vault extends JavaPlugin {
 
         // Try to load Permissions 3 (Yeti)
         hookPermission("Permissions 3 (Yeti)", Permission_Permissions3.class, ServicePriority.Normal, "com.nijiko.permissions.ModularControl");
+        
+        // Try to load Xperms
+        hookPermission("Xperms", Permission_Xperms.class, ServicePriority.Low, "com.github.sebc722.Xperms");
 
         Permission perms = new Permission_SuperPerms(this);
         sm.register(Permission.class, perms, this, ServicePriority.Lowest);

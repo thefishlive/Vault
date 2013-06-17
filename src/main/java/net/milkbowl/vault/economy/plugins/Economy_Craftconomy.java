@@ -52,7 +52,7 @@ public class Economy_Craftconomy implements Economy {
         // Load Plugin in case it was loaded before
         if (economy == null) {
             Plugin ec = plugin.getServer().getPluginManager().getPlugin("Craftconomy");
-            if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("me.greatman.Craftconomy.Craftconomy")) {
+            if (ec != null && ec.getClass().getName().equals("me.greatman.Craftconomy.Craftconomy")) {
                 economy = (Craftconomy) ec;
                 log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), name));
             }
@@ -185,10 +185,11 @@ public class Economy_Craftconomy implements Economy {
         if (BankHandler.exists(name))
         {
             Bank bank = BankHandler.getBank(name);
-            if (bank.hasEnough(amount))
+            if (bank.hasEnough(amount)) {
                 return new EconomyResponse(0, 0, ResponseType.SUCCESS, "");
-            else
+            } else {
                 return new EconomyResponse(0, bank.getDefaultBalance(), ResponseType.FAILURE, "The bank does not have enough money!");
+            }
         }
         return new EconomyResponse(0, 0, ResponseType.FAILURE, "That bank does not exist!");
     }
@@ -200,12 +201,10 @@ public class Economy_Craftconomy implements Economy {
         }
 
         EconomyResponse er = bankHas(name, amount);
-        if (!er.transactionSuccess())
+        if (!er.transactionSuccess()) {
             return er;
-        else
-        {
-            if (BankHandler.exists(name))
-            {
+        } else {
+            if (BankHandler.exists(name)) {
                 Bank bank = BankHandler.getBank(name);
                 double balance = bank.substractMoney(amount);
                 return new EconomyResponse(0, balance, ResponseType.SUCCESS, "");
@@ -221,8 +220,7 @@ public class Economy_Craftconomy implements Economy {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
         }
 
-        if (BankHandler.exists(name))
-        {
+        if (BankHandler.exists(name)) {
             Bank bank = BankHandler.getBank(name);
             double balance = bank.addMoney(amount);
             return new EconomyResponse(0, balance, ResponseType.SUCCESS, "");
@@ -232,11 +230,9 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse isBankOwner(String name, String playerName) {
-        if (BankHandler.exists(name))
-        {
+        if (BankHandler.exists(name)) {
             Bank bank = BankHandler.getBank(name);
-            if (bank.getOwner().equals(playerName))
-            {
+            if (bank.getOwner().equals(playerName)) {
                 return new EconomyResponse(0, bank.getDefaultBalance(), ResponseType.SUCCESS, "");
             }
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "This player is not the owner of the bank!");
@@ -247,16 +243,13 @@ public class Economy_Craftconomy implements Economy {
     @Override
     public EconomyResponse isBankMember(String name, String playerName) {
         EconomyResponse er = isBankOwner(name,playerName);
-        if (er.transactionSuccess())
+        if (er.transactionSuccess()) {
             return er;
-        else
-        {
-            if (BankHandler.exists(name))
-            {
+        } else {
+            if (BankHandler.exists(name)) {
                 Bank bank = BankHandler.getBank(name);
                 Iterator<String> iterator = bank.getMembers().iterator();
-                while(iterator.hasNext())
-                {
+                while(iterator.hasNext()) {
                     if (iterator.next().equals(playerName))
                         return new EconomyResponse(0,bank.getDefaultBalance(), ResponseType.SUCCESS, "");
                 }
@@ -268,8 +261,7 @@ public class Economy_Craftconomy implements Economy {
 
     @Override
     public EconomyResponse bankBalance(String name) {
-        if (BankHandler.exists(name))
-        {
+        if (BankHandler.exists(name)) {
             return new EconomyResponse(0, BankHandler.getBank(name).getDefaultBalance(), ResponseType.SUCCESS, "");
         }
         return new EconomyResponse(0, 0, ResponseType.FAILURE, "That bank does not exist!");
@@ -303,4 +295,34 @@ public class Economy_Craftconomy implements Economy {
 	public int fractionalDigits() {
 		return -1;
 	}
+
+    @Override
+    public boolean hasAccount(String playerName, String worldName) {
+        return hasAccount(playerName);
+    }
+
+    @Override
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
+    }
+
+    @Override
+    public boolean has(String playerName, String worldName, double amount) {
+        return has(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
+    }
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        return createPlayerAccount(playerName);
+    }
 }

@@ -67,7 +67,7 @@ public class Economy_Gringotts implements Economy {
             if (economy.gringotts == null) {
                 Plugin grngts = plugin.getServer().getPluginManager().getPlugin("Gringotts");
 
-                if (grngts != null && grngts.isEnabled()) {
+                if (grngts != null) {
                     economy.gringotts = (Gringotts) grngts;
                     log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
@@ -123,7 +123,9 @@ public class Economy_Gringotts implements Economy {
     @Override
     public boolean hasAccount(String playerName) {
         AccountHolder owner = gringotts.accountHolderFactory.getAccount(playerName);
-        if (owner == null) return false;
+        if (owner == null) {
+            return false;
+        }
 
         return gringotts.accounting.getAccount(owner) != null;
     }
@@ -131,7 +133,9 @@ public class Economy_Gringotts implements Economy {
     @Override
     public double getBalance(String playerName){
         AccountHolder owner = gringotts.accountHolderFactory.getAccount(playerName);
-        if (owner == null) return 0;
+        if (owner == null) {
+            return 0;
+        }
         Account account = gringotts.accounting.getAccount(owner);
         return account.balance();
     }
@@ -149,8 +153,9 @@ public class Economy_Gringotts implements Economy {
         }
 
         AccountHolder accountHolder = gringotts.accountHolderFactory.getAccount(playerName);
-        if (accountHolder == null) 
+        if (accountHolder == null) {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
+        }
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
@@ -171,16 +176,17 @@ public class Economy_Gringotts implements Economy {
         }
 
         AccountHolder accountHolder = gringotts.accountHolderFactory.getAccount(playerName);
-        if (accountHolder == null) 
+        if (accountHolder == null) {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, playerName + " is not a valid account holder.");
+        }
 
         Account account = gringotts.accounting.getAccount( accountHolder );
 
-        if (account.add(amount))        
+        if (account.add(amount)) {   
             return new EconomyResponse( amount, account.balance(), ResponseType.SUCCESS, null);
-        else
+        } else {
             return new EconomyResponse( 0, account.balance(), ResponseType.FAILURE, "Not enough capacity to store that amount!");
-
+        }
     }
 
     @Override
@@ -231,5 +237,35 @@ public class Economy_Gringotts implements Economy {
     @Override
     public boolean createPlayerAccount(String playerName) {
         return hasAccount(playerName);
+    }
+
+    @Override
+    public boolean hasAccount(String playerName, String worldName) {
+        return hasAccount(playerName);
+    }
+
+    @Override
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
+    }
+
+    @Override
+    public boolean has(String playerName, String worldName, double amount) {
+        return has(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
+    }
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        return createPlayerAccount(playerName);
     }
 }

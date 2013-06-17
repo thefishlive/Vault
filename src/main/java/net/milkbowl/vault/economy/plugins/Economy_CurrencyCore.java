@@ -112,8 +112,9 @@ public class Economy_CurrencyCore implements Economy {
     @Override
     public double getBalance(String playerName) {
         AccountContext account = this.currency.getAccountManager().getAccount(playerName);
-        if (account == null)
+        if (account == null) {
             return 0.0;     
+        }
 
         return account.getBalance();
     }
@@ -121,10 +122,11 @@ public class Economy_CurrencyCore implements Economy {
     @Override
     public boolean has(String playerName, double amount) {
         AccountContext account = this.currency.getAccountManager().getAccount(playerName);
-        if (account == null)
+        if (account == null) {
             return false;
-        else
+        } else {
             return account.hasBalance(amount);
+        }
     }
 
     @Override
@@ -268,4 +270,34 @@ public class Economy_CurrencyCore implements Economy {
 	public int fractionalDigits() {
 		return -1;
 	}
+
+    @Override
+    public boolean hasAccount(String playerName, String worldName) {
+        return hasAccount(playerName);
+    }
+
+    @Override
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
+    }
+
+    @Override
+    public boolean has(String playerName, String worldName, double amount) {
+        return has(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
+    }
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        return createPlayerAccount(playerName);
+    }
 }

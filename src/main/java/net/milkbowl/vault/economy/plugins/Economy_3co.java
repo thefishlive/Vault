@@ -158,7 +158,7 @@ public class Economy_3co implements Economy {
             if (economy.economy == null) {
                 Plugin eco = plugin.getServer().getPluginManager().getPlugin("3co");
 
-                if (eco != null && eco.isEnabled()) {
+                if (eco != null) {
                     economy.economy = (ECO) eco;
                     log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
                 }
@@ -260,4 +260,34 @@ public class Economy_3co implements Economy {
 	public int fractionalDigits() {
 		return 0;
 	}
+
+    @Override
+    public boolean hasAccount(String playerName, String worldName) {
+        return hasAccount(playerName);
+    }
+
+    @Override
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
+    }
+
+    @Override
+    public boolean has(String playerName, String worldName, double amount) {
+        return has(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
+    }
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        return createPlayerAccount(playerName);
+    }
 }

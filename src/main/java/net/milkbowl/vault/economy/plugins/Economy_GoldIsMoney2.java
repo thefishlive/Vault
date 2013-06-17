@@ -266,7 +266,7 @@ public class Economy_GoldIsMoney2 implements Economy {
 			if (economy.economy == null) {
 				Plugin ec = plugin.getServer().getPluginManager().getPlugin("GoldIsMoney");
 
-				if (ec != null && ec.isEnabled() && ec.getClass().getName().equals("com.flobi.GoldIsMoney2.GoldIsMoney")) {
+				if (ec != null && ec.getClass().getName().equals("com.flobi.GoldIsMoney2.GoldIsMoney")) {
 					economy.economy = (GoldIsMoney) ec;
 					log.info(String.format("[%s][Economy] %s hooked.", plugin.getDescription().getName(), economy.name));
 				}
@@ -283,4 +283,34 @@ public class Economy_GoldIsMoney2 implements Economy {
 			}
 		}
 	}
+
+    @Override
+    public boolean hasAccount(String playerName, String worldName) {
+        return hasAccount(playerName);
+    }
+
+    @Override
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
+    }
+
+    @Override
+    public boolean has(String playerName, String worldName, double amount) {
+        return has(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
+    }
+
+    @Override
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
+    }
+
+    @Override
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        return createPlayerAccount(playerName);
+    }
 }

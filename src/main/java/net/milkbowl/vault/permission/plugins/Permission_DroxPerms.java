@@ -92,7 +92,7 @@ public class Permission_DroxPerms extends Permission {
 
     @Override
     public boolean groupHas(String world, String group, String permission) {
-        throw new UnsupportedOperationException(getName() + " no groupHas.");
+        return false; //Droxperms doesn't support direct permission checking of groups
     }
 
     @Override
@@ -135,6 +135,11 @@ public class Permission_DroxPerms extends Permission {
     @Override
     public String[] getGroups() {
         return API.getGroupNames();
+    }
+
+    @Override
+    public boolean hasGroupSupport() {
+        return true;
     }
 
 }

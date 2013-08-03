@@ -75,6 +75,7 @@ import net.milkbowl.vault.permission.plugins.Permission_Xperms;
 import net.milkbowl.vault.permission.plugins.Permission_bPermissions;
 import net.milkbowl.vault.permission.plugins.Permission_bPermissions2;
 import net.milkbowl.vault.permission.plugins.Permission_zPermissions;
+import net.milkbowl.vault.permission.plugins.Permission_TotalPermissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -98,6 +99,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.nijikokun.register.payment.Methods;
+import net.milkbowl.vault.economy.plugins.Economy_MiConomy;
 
 public class Vault extends JavaPlugin {
 
@@ -150,16 +152,9 @@ public class Vault extends JavaPlugin {
 
         // Load up the Plugin metrics
         try {
-            String authors = "";
-            for (String author : this.getDescription().getAuthors()) {
-                authors += author + ", ";
-            }
-            if (!authors.isEmpty()) {
-                authors = authors.substring(0, authors.length() - 2);
-            }
-            metrics = new Metrics(getDescription().getVersion(), authors);
-            metrics.findCustomData(this);
-            metrics.beginMeasuringPlugin(this);
+            metrics = new Metrics(this);
+            metrics.findCustomData();
+            metrics.start();
         } catch (IOException e) {
             // ignore exception
         }
@@ -208,6 +203,9 @@ public class Vault extends JavaPlugin {
      * Attempts to load Economy Addons
      */
     private void loadEconomy() {
+        // Try to load MiConomy
+        hookEconomy("MiConomy", Economy_MiConomy.class, ServicePriority.Normal, "com.gmail.bleedobsidian.miconomy.Main");
+        
         // Try to load MultiCurrency
         hookEconomy("MultiCurrency", Economy_MultiCurrency.class, ServicePriority.Normal, "me.ashtheking.currency.Currency", "me.ashtheking.currency.CurrencyList");
 
@@ -320,6 +318,9 @@ public class Vault extends JavaPlugin {
         
         // Try to load Xperms
         hookPermission("Xperms", Permission_Xperms.class, ServicePriority.Low, "com.github.sebc722.Xperms");
+
+        //Try to load TotalPermissions
+        hookPermission("TotalPermissions", Permission_TotalPermissions.class, ServicePriority.Normal, "net.ae97.totalpermissions.TotalPermissions");
 
         Permission perms = new Permission_SuperPerms(this);
         sm.register(Permission.class, perms, this, ServicePriority.Lowest);
